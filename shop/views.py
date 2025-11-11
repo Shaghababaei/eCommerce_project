@@ -43,11 +43,9 @@ from .models import Product, Category
 from decimal import Decimal
 
 def _get_cart(request):
-    """کارت رو از سشن بگیر یا خالی بساز."""
     return request.session.get('cart', {})
 
 def _save_cart(request, cart):
-    """کارت رو داخل سشن ذخیره کن و modified رو ست کن."""
     request.session['cart'] = cart
     request.session.modified = True
 
@@ -65,14 +63,9 @@ def remove_from_cart(request, product_id):
     return redirect('cart_detail')
 
 def cart_detail(request):
-    """
-    اگر POST باشه، مقادیر تعداد رو از فرم می‌خونیم و سبد رو آپدیت می‌کنیم.
-    در غیر این صورت، نمای سبد خرید رو نشون می‌دیم.
-    """
     cart = _get_cart(request)
 
     if request.method == 'POST':
-        # انتظار داریم فیلدهایی مثل qty_3 = 2 داشته باشیم
         updated = {}
         for k, v in request.POST.items():
             if not k.startswith('qty_'):
@@ -84,19 +77,16 @@ def cart_detail(request):
                 qty = 0
             if qty > 0:
                 updated[pid] = qty
-        # جایگزینی کامل بر اساس ورودی‌های معتبر
         cart = updated
         _save_cart(request, cart)
         return redirect('cart_detail')
 
-    # ساخت داده‌های لازم برای نمایش
     items = []
     total = Decimal('0.00')
     for product_id, quantity in cart.items():
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
-            # اگر محصول حذف شده بود، از سبد هم حذفش کنیم
             continue
         subtotal = product.price * int(quantity)
         total += subtotal
