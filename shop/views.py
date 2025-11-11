@@ -4,6 +4,8 @@ from .models import Product,Category
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+
 
 
 # Create your views here.
@@ -17,6 +19,14 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'shop/signup.html', {'form': form})
+
+@login_required
+def profile(request):
+    user = request.user
+    context = {
+        'user': user
+    }
+    return render(request, 'shop/profile.html', context)
 
 def product_list(request, category_id=None):
     categories = Category.objects.all()
