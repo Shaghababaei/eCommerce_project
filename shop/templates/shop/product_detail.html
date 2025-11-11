@@ -1,0 +1,25 @@
+{% extends 'shop/base.html' %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+    {% else %}
+      <div class="alert alert-info">No image available</div>
+    {% endif %}
+  </div>
+
+  <div class="col-md-6">
+    <h2>{{ product.name }}</h2>
+    <p>{{ product.description }}</p>
+    <h4>{{ product.price }} $</h4>
+
+    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success">
+        Add to Cart
+      </a>
+    <a href="/" class="btn btn-outline-secondary">Back to Products</a>
+  </div>
+</div>
+{% endblock %}

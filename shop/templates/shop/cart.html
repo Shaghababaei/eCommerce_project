@@ -1,0 +1,58 @@
+{% extends 'shop/base.html' %}
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+<h1>Your Shopping Cart</h1>
+
+{% if cart_items %}
+  <form method="post" class="mb-3">
+    {% csrf_token %}
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th style="width: 40%">Product</th>
+          <th style="width: 15%">Price</th>
+          <th style="width: 15%">Quantity</th>
+          <th style="width: 15%">Subtotal</th>
+          <th style="width: 15%"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.product.price }} $</td>
+            <td style="max-width:120px">
+              <input type="number"
+                     name="qty_{{ item.product.id }}"
+                     value="{{ item.quantity }}"
+                     min="0"
+                     class="form-control form-control-sm">
+              <small class="text-muted">0 یعنی حذف</small>
+            </td>
+            <td>{{ item.subtotal }} $</td>
+            <td>
+              <a class="btn btn-outline-danger btn-sm"
+                 href="{% url 'remove_from_cart' item.product.id %}">
+                Remove
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center">
+      <a href="/" class="btn btn-outline-secondary">Continue Shopping</a>
+      <div>
+        <strong class="me-3">Total: {{ total }} $</strong>
+        <button type="submit" class="btn btn-primary">Update Cart</button>
+        <a href="#" class="btn btn-success ms-2">Proceed to Checkout</a>
+      </div>
+    </div>
+  </form>
+{% else %}
+  <p>Your cart is empty.</p>
+  <a href="/" class="btn btn-primary">Go to Shop</a>
+{% endif %}
+{% endblock %}

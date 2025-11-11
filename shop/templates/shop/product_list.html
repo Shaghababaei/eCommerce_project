@@ -1,0 +1,42 @@
+{% extends 'shop/base.html' %}
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<h1>Our Clothes</h1>
+
+<!-- Category Filter -->
+<div class="mb-4">
+  <strong>Categories:</strong>
+  <a href="{% url 'product_list' %}" class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn-outline-primary{% endif %}">
+    All
+  </a>
+  {% for cat in categories %}
+    <a href="{% url 'product_by_category' cat.id %}" class="btn btn-sm {% if selected_category == cat %}btn-primary{% else %}btn-outline-primary{% endif %}">
+      {{ cat.name }}
+    </a>
+  {% endfor %}
+</div>
+
+<!-- Product List -->
+<div class="row">
+  {% for product in products %}
+    <div class="col-md-3 mb-4">
+      <div class="card h-100">
+        {% if product.image %}
+          <a href="{% url 'product_detail' product.id %}">
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+          </a>
+        {% endif %}
+        <div class="card-body">
+          <a href="{% url 'product_detail' product.id %}" class="text-decoration-none">
+            {{ product.name }}
+          </a>
+          <p>{{ product.price }} $</p>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No products found in this category.</p>
+  {% endfor %}
+</div>
+{% endblock %}
